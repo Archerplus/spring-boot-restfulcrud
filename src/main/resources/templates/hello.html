@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>[[${title}]]</title>
+</head>
+<body>
+    <h1 th:text="${title}">title</h1>
+    <div th:text="${info}">这个文本内容会被覆盖</div>
+</body>
+</html>

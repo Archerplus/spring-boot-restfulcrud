@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dashboard Template for Bootstrap</title>
+    <!-- Bootstrap core CSS -->
+    <link href="asserts/css/bootstrap.min.css" rel="stylesheet" th:href="@{/webjars/bootstrap/4.4.1/css/bootstrap.css}">
+
+    <!-- Custom styles for this template -->
+    <link href="asserts/css/dashboard.css" rel="stylesheet" th:href="@{/asserts/css/dashboard.css}">
+    <style type="text/css">
+        /* Chart.js */
+
+        @-webkit-keyframes chartjs-render-animation {
+            from {
+                opacity: 0.99
+            }
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes chartjs-render-animation {
+            from {
+                opacity: 0.99
+            }
+            to {
+                opacity: 1
+            }
+        }
+
+        .chartjs-render-monitor {
+            -webkit-animation: chartjs-render-animation 0.001s;
+            animation: chartjs-render-animation 0.001s;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="commons/topbar::topbar"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div th:replace="commons/sidebar::#sidebar(currentURI='emps')"></div>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <!--需要区分是员工修改还是添加-->
+            <form th:action="@{/emp}" method="post">
+                <!--发送put请求修改员工数据-->
+                <!--
+                    1、Spring MVC中配置HiddenHttpMethodFilter（Spring Boot自动配置好的）
+                    2、页面创建一个POST表单
+                    3、创建一个input项，name="_method";值就是我们指定的请求方式
+                    -->
+                <input type="hidden" name="_method" value="put" th:if="${emp!=null}"/>
+                <input type="hidden" name="id" th:if="${emp!=null}" th:value="${emp.getId()}">
+                <div class="form-group">
+                    <label>LastName</label>
+                    <input th:value="${emp!=null}?${emp.getLastName()}" name="lastName" type="text" class="form-control" placeholder="zhangsan">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input  th:value="${emp!=null}?${emp.getEmail()}" name="email" type="email" class="form-control" placeholder="zhangsan@atguigu.com">
+                </div>
+                <div class="form-group">
+                    <label>Gender</label><br/>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" value="1" th:checked="${emp!=null}?${emp.getGender()}==1">
+                        <label class="form-check-label">男</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" value="0" th:checked="${emp!=null}?${emp.getGender()}==0">
+                        <label class="form-check-label">女</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>department</label>
+                    <!--提交的是部门的ID-->
+<!--                    <select name="department.id" class="form-control">-->
+<!--                        <option th:selected="${dept.getId()} == ${emp.getDepartment().getId()}" th:each="dept:${depts}" th:text="${dept.getDepartmentName()}" th:value="${dept.getId()}"></option>-->
+<!--                    </select>-->
+                    <select name="department.id" class="form-control">
+                        <option th:selected="${emp!=null}?${dept.getId()} == ${emp.getDepartment().getId()}" th:each="dept:${depts}" th:text="${dept.departmentName}" th:value="${dept.id}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Birth</label>
+                    <input th:value="${emp!=null}?${#dates.format(emp.getBirth(), 'yyyy-MM-dd HH:mm')}" name="birth" type="text" class="form-control" placeholder="2020-02-03">
+                </div>
+                <button type="submit" class="btn btn-primary" th:text="${emp!=null}?'修改':'添加'">添加</button>
+            </form>
+        </main>
+    </div>
+</div>
+</body>
+</html>
